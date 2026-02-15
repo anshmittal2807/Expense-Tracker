@@ -1,12 +1,13 @@
 package com.agile.expenseTracker.model;
 
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.*;
 
 import java.util.Date;
 
+@Entity
 public class ExpenseRecord {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // auto-increment in DB
     private Integer expenseId;
 
     private String description;
@@ -18,6 +19,7 @@ public class ExpenseRecord {
     @OneToOne
     private  Category category;
 
+    @OneToOne
     private Users user;
 
     public Integer getExpenseId() {

@@ -1,8 +1,6 @@
 package com.agile.expenseTracker.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 @Entity
 public class Users {
@@ -16,6 +14,7 @@ public class Users {
     private String email;
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // auto-increment in DB
     private Integer userId;
 
     public Users() {
