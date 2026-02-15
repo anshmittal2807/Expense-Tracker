@@ -1,32 +1,63 @@
 package com.agile.expenseTracker.controller;
 
+import com.agile.expenseTracker.model.ExpenseRecord;
 import com.agile.expenseTracker.model.Users;
-import com.agile.expenseTracker.repository.IuserRepo;
+import com.agile.expenseTracker.service.ExpenseService;
+import com.agile.expenseTracker.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @RestController
 public class UserController {
 
-    private final IuserRepo userRepo;
-    private final BCryptPasswordEncoder encoder;
+    private final UserService userService;
 
-
-    UserController(IuserRepo userRepo , BCryptPasswordEncoder encoder){
-        this.userRepo =  userRepo;
-
-        this.encoder = encoder;
+    @Autowired
+    private ExpenseService expenseService;
+    UserController(UserService userService ){
+        this.userService =  userService;
     }
 
     @PostMapping("/save")
-    public ResponseEntity<Users> signup(@RequestBody Users user){
-        user.setPassword(encoder.encode(user.getPassword()));
-        return new ResponseEntity<Users>(userRepo.save(user) , HttpStatus.CREATED);
+    public ResponseEntity<Object> signup(@RequestBody Users user) {
 
+        Users savedUser = userService.save(user);
+
+        if (savedUser != null) {
+            return new ResponseEntity<>(savedUser, HttpStatus.CREATED);
+        }
+
+        return new ResponseEntity<>("some error occure", HttpStatus.BAD_REQUEST);
+    }
+
+
+    @PostMapping("/login")
+    public ResponseEntity<Map> login(@RequestBody Users user){
+        String token = userService.verify(user);
+        Map<String , String> map =  new HashMap<>();
+
+
+        if (token != null) {
+            map.put("token" , token);
+            return new ResponseEntity<>(map, HttpStatus.OK);
+        }
+        map.put("error" , "login failed due to invalid creditials");
+
+        return new ResponseEntity<>(map, HttpStatus.BAD_REQUEST);
+    }
+
+    @PostMapping("/expense")
+    public ResponseEntity<ExpenseRecord> saveExpense(@RequestBody ExpenseRecord expense , Authentication authentication){
+        return new ResponseEntity<>(expenseService.saveExpense(expense , authentication) ,HttpStatus.OK );
     }
 
 }

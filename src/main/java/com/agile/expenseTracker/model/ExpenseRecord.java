@@ -16,10 +16,10 @@ public class ExpenseRecord {
 
     private Date date;
 
-    @OneToOne
-    private  Category category;
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    private Category category;
 
-    @OneToOne
+    @ManyToOne
     private Users user;
 
     public Integer getExpenseId() {

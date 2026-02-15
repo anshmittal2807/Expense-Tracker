@@ -2,20 +2,26 @@ package com.agile.expenseTracker.model;
 
 import jakarta.persistence.*;
 
+import java.util.List;
+
 @Entity
 public class Users {
 
-    @Column(unique = true)
+    @Column(nullable = false, unique = true)
     private String userName;
 
     private String password;
 
-    @Column(unique = true)
+    @Column(nullable = false, unique = true)
     private String email;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) // auto-increment in DB
     private Integer userId;
+
+    @OneToMany(cascade = CascadeType.ALL)
+    private List<ExpenseRecord> expenseRecords;
+
 
     public Users() {
     }
