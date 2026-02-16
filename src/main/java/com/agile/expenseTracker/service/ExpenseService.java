@@ -4,23 +4,27 @@ import com.agile.expenseTracker.model.Category;
 import com.agile.expenseTracker.model.ExpenseRecord;
 import com.agile.expenseTracker.model.Users;
 import com.agile.expenseTracker.repository.IexpenseRecord;
-import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class ExpenseService {
 
     private final UserService userService;
-    private final IexpenseRecord expenseRecord;
+    private final IexpenseRecord expenseService;
     @Autowired
     private  CategoryService categoryService;
 
     // Constructor injection
-    public ExpenseService(UserService userService, IexpenseRecord expenseRecord) {
+    public ExpenseService(UserService userService, IexpenseRecord expenseService) {
         this.userService = userService;
-        this.expenseRecord = expenseRecord;
+        this.expenseService = expenseService;
     }
 
     public ExpenseRecord saveExpense(ExpenseRecord record, Authentication authentication) {
@@ -31,6 +35,32 @@ public class ExpenseService {
         Category category =  categoryService.saveCategory(record.getCategory());
         record.setCategory(category);
 
-        return expenseRecord.save(record);
+        return expenseService.save(record);
     }
+    public Map<String, Object> deleteExpense(Integer id) {
+        Map<String, Object> map = new HashMap<>();
+
+        Optional<ExpenseRecord> record = expenseService.findById(id);
+
+        if (record.isPresent()) {
+            expenseService.delete(record.get());
+            map.put("Status", true);
+            map.put("Message", "Expense deleted successfully");
+        } else {
+            map.put("Status", false);
+            map.put("Message", "Expense not found");
+        }
+
+        return map;
+    }
+
+    public Map<String , List> getAllExpenses(String userName){
+        Map<String , List> map =  new HashMap<>();
+        Users user = userService.fetchUserByUsernameOrEmail(userName);
+        List<ExpenseRecord> expenseRecordList =  expenseService.findAllByUser(user);
+        map.put("ExpenseRecord" , expenseRecordList);
+        return map;
+    }
+
+
 }

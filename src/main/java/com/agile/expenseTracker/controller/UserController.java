@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -58,6 +59,16 @@ public class UserController {
     @PostMapping("/expense")
     public ResponseEntity<ExpenseRecord> saveExpense(@RequestBody ExpenseRecord expense , Authentication authentication){
         return new ResponseEntity<>(expenseService.saveExpense(expense , authentication) ,HttpStatus.OK );
+    }
+
+    @PostMapping("/delExpense")
+    public ResponseEntity<Map<String , Object>> deleteExpense (@RequestBody Map<String, Integer> map){
+        return  new ResponseEntity<>(expenseService.deleteExpense(map.get("id")) , HttpStatus.OK);
+    }
+
+    @GetMapping("/expense")
+    public ResponseEntity<Map<String , List>> info(Authentication authentication){
+        return  new ResponseEntity<>(expenseService.getAllExpenses(authentication.getName()) , HttpStatus.OK);
     }
 
 }
