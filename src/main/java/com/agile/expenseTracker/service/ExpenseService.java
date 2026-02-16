@@ -6,6 +6,9 @@ import com.agile.expenseTracker.model.Users;
 import com.agile.expenseTracker.repository.IexpenseRecord;
 import io.jsonwebtoken.security.PublicJwkBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
@@ -75,6 +78,16 @@ public class ExpenseService {
         return expenseService.save(record);
     }
 
+        public Map<String , List> fetchExpensePages(Integer pageNumber , Integer pageSize , Authentication authentication){
+
+            Pageable pageable =  PageRequest.of(pageNumber , pageSize);
+            Map<String , List> map = new HashMap<>();
+            Users user =  userService.fetchUserByUsernameOrEmail(authentication.getName());
+            Page<ExpenseRecord> page =  expenseService.findAllByUser(user , pageable);
+            map.put("record" , page.getContent());
+            System.out.println(map);
+            return map;
+        }
 
 
 }

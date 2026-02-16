@@ -73,5 +73,12 @@ public class UserController {
     {
         return new ResponseEntity<>(expenseService.updateExpense(expenseRecord , authentication) ,HttpStatus.OK);
     }
+    @GetMapping("/expense/")
+    public ResponseEntity<Map<String , List>> info2(@RequestParam int pageNumber,
+                                                    @RequestParam int pageSize ,
+                                                    Authentication authentication){
+        return  new ResponseEntity<>(expenseService.fetchExpensePages(pageNumber , pageSize , authentication ) , HttpStatus.OK);
+    }
+
 
 }

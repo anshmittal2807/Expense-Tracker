@@ -2,7 +2,6 @@ package com.agile.expenseTracker.service;
 
 import com.agile.expenseTracker.model.Users;
 import com.agile.expenseTracker.repository.IuserRepo;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
