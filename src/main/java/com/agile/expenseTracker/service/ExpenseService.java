@@ -4,6 +4,7 @@ import com.agile.expenseTracker.model.Category;
 import com.agile.expenseTracker.model.ExpenseRecord;
 import com.agile.expenseTracker.model.Users;
 import com.agile.expenseTracker.repository.IexpenseRecord;
+import io.jsonwebtoken.security.PublicJwkBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
@@ -61,6 +62,19 @@ public class ExpenseService {
         map.put("ExpenseRecord" , expenseRecordList);
         return map;
     }
+
+    public ExpenseRecord updateExpense(ExpenseRecord record , Authentication authentication){
+
+        String userName = authentication.getName();
+        Users user = userService.fetchUserByUsernameOrEmail(userName);
+        record.setUser(user);
+
+        Category category =  categoryService.saveCategory(record.getCategory());
+        record.setCategory(category);
+
+        return expenseService.save(record);
+    }
+
 
 
 }

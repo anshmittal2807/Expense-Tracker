@@ -1,5 +1,6 @@
 package com.agile.expenseTracker.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.Date;
@@ -20,6 +21,7 @@ public class ExpenseRecord {
     private Category category;
 
     @ManyToOne
+    @JsonIgnore
     private Users user;
 
     public Integer getExpenseId() {

@@ -8,10 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.List;
@@ -69,6 +66,12 @@ public class UserController {
     @GetMapping("/expense")
     public ResponseEntity<Map<String , List>> info(Authentication authentication){
         return  new ResponseEntity<>(expenseService.getAllExpenses(authentication.getName()) , HttpStatus.OK);
+    }
+
+    @PutMapping("/expense")
+    public ResponseEntity<ExpenseRecord> updateExpense (@RequestBody ExpenseRecord expenseRecord , Authentication authentication)
+    {
+        return new ResponseEntity<>(expenseService.updateExpense(expenseRecord , authentication) ,HttpStatus.OK);
     }
 
 }
